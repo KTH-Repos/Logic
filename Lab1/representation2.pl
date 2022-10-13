@@ -27,16 +27,18 @@ own_reverse(L,R) :- reverse_accumulator(L,[],R).
 joined(X,Y) :- edge(X,Y).
 joined(X,Y) :- edge(Y,X).
 
-traverse(U,V,_,[U|V]) :- joined(U,V).
+path(U,V,Path) :-
+    traverse(U,V,[U],W),
+    own_reverse(W,Path).
+
+traverse(U,V,P,[V|P]) :- joined(U,V).
 
 traverse(U,V,Visited,Path) :-
     joined(U,W),
     W\=V,
     \+member(W,Visited),
-    traverse(W,V,[U|Visited],Path).
+    traverse(W,V,[W|Visited],Path).
 
-path(U,V,Path) :-
-    traverse(U,V,[],W),
-    own_reverse(W,Path).
+
 
     
