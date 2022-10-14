@@ -31,8 +31,13 @@ path(U,V,Path) :-
     traverse(U,V,[U],W),
     own_reverse(W,Path).
 
+% If U and V are neighbours, then we have done
+% path between them. 
 traverse(U,V,P,[V|P]) :- joined(U,V).
 
+% If U and V are not direct neighbours, then there must
+% another node(s) between them that can be used to traverse
+% the graph until we reach V. 
 traverse(U,V,Visited,Path) :-
     joined(U,W),
     W\=V,

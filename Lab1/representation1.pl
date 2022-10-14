@@ -11,6 +11,8 @@ own_reverse(L,R) :- reverse_accumulator(L,[],R).
 
 remove_duplicates(L,N) :- duplicate_accumulator(L,[],M), own_reverse(M,N).
 
+% Third parameter is all the single occurence 
+% of elements in reverse order.
 duplicate_accumulator([], A, A).
 duplicate_accumulator([H|T], A, L) :- 
     member(H,A),
