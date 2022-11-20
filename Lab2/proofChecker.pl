@@ -10,13 +10,13 @@ valid_proof(Prems, Goal, [X,Y|T], Verifiedlines) :-
     andint(X, Verifiedlines); andel1(X, Verifiedlines); andel2(X, Verifiedlines); 
     orint1(X, Verifiedlines); orint2(X, Verifiedlines); impel(X, Verifiedlines);
     negel(X, Verifiedlines); mt(X, Verifiedlines); lem(X, Verifiedlines); 
-    negnegint(X, Verifiedlines); negnegel(X, Verifiedlines); copy(X, VerifiedLines),
-	valid_proof(Prems, Goal, [Y|T], Verifiedlines).
+    negnegint(X, Verifiedlines); negnegel(X, Verifiedlines); contel(X, VerifiedLines); 
+    copy(X, VerifiedLines), valid_proof(Prems, Goal, [Y|T], Verifiedlines).
 
 
 checkGoal(Goal, Proof) :- 
     last(Proof, LastRow),
-    nth0(1,LastRow,Goal). 
+    nth1(2,LastRow,Goal). 
 
 %%andint
 andint([Row, and(P,Q), andint(R1, R2)], Verifiedlines):-
@@ -61,6 +61,10 @@ negnegint([_, negneg(P), negnegint(Row)], Verifiedlines) :-
 %%negnegel
 negnegel([_, P, negnegel(Row)], Verifiedlines) :-
     member([Row, negneg(P), _], Verifiedlines). 
+
+%%contel
+contel([_, _, contel(Row)], VerifiedLines) :-
+    member([Row, cont, _], VerifiedLines). 
 
 %%copy
 copy([_, P, copy(Row)], Verifiedlines):- 
