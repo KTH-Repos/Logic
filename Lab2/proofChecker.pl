@@ -6,8 +6,11 @@ verify(InputFileName) :-
     checkGoal(Goal, Proof),
     valid_proof(Prems, Goal, Proof, Verifiedlines).
 
+
+valid_proof(_, _, [], _).
+
 valid_proof(Prems, Goal, [X,Y|T], Verifiedlines) :-
-    andint(X, Verifiedlines); andel1(X, Verifiedlines); andel2(X, Verifiedlines); 
+    premise(Prems, X); andint(X, Verifiedlines); andel1(X, Verifiedlines); andel2(X, Verifiedlines); 
     orint1(X, Verifiedlines); orint2(X, Verifiedlines); impel(X, Verifiedlines);
     negel(X, Verifiedlines); mt(X, Verifiedlines); lem(X, Verifiedlines); 
     negnegint(X, Verifiedlines); negnegel(X, Verifiedlines); contel(X, VerifiedLines); 
@@ -16,7 +19,10 @@ valid_proof(Prems, Goal, [X,Y|T], Verifiedlines) :-
 
 checkGoal(Goal, Proof) :- 
     last(Proof, LastRow),
-    nth1(2,LastRow,Goal). 
+    nth1(2,LastRow,Goal).
+
+%%check premise
+premise(Prems, [_, P, premise]) :- member(P, Prems). 
 
 %%andint
 andint([Row, and(P,Q), andint(R1, R2)], Verifiedlines):-
@@ -71,4 +77,7 @@ copy([_, P, copy(Row)], Verifiedlines):-
     member([Row, P, _], Verifiedlines). 
 
 %%findbox
-%findbox([])
+%findbox(Prems, Goal, [[_, _, assumption]|T], VerifiedLines) :- 
+%%    valid_proof(Prems, Goal, T, [[_, _, assumption]|VerifiedLines]).
+
+%%
