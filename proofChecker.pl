@@ -6,17 +6,24 @@ verify(InputFileName) :-
     checkGoal(Goal, Proof),
     valid_proof(Prems, Goal, Proof, Verifiedlines).
 
+
+valid_proof(_, _, [], _).
+
 valid_proof(Prems, Goal, [X,Y|T], Verifiedlines) :-
-    andint(X, Verifiedlines); andel1(X, Verifiedlines); andel2(X, Verifiedlines); 
+    premise(Prems, X); andint(X, Verifiedlines); andel1(X, Verifiedlines); andel2(X, Verifiedlines); 
     orint1(X, Verifiedlines); orint2(X, Verifiedlines); impel(X, Verifiedlines);
     negel(X, Verifiedlines); mt(X, Verifiedlines); lem(X, Verifiedlines); 
     negnegint(X, Verifiedlines); negnegel(X, Verifiedlines); contel(X, VerifiedLines); 
-    copy(X, VerifiedLines), valid_proof(Prems, Goal, [Y|T], Verifiedlines).
+    copy(X, Verifiedlines); findbox(Prems, Goal, X, Verifiedlines); orel(X, Verifiedlines);
+    impint(X, Verifiedlines); negint(X, Verifiedlines); pbc(X, Ver), valid_proof(Prems, Goal, [Y|T], Verifiedlines).
 
 
 checkGoal(Goal, Proof) :- 
     last(Proof, LastRow),
-    nth1(2,LastRow,Goal). 
+    nth1(2,LastRow,Goal).
+
+%%check premise
+premise(Prems, [_, P, premise]) :- member(P, Prems). 
 
 %%andint
 andint([Row, and(P,Q), andint(R1, R2)], Verifiedlines):-
@@ -31,7 +38,7 @@ andel2([_, Q, andel2(Row)], Verifiedlines) :-
     member([Row, and(_,Q), _], Verifiedlines).
 
 %%orint1
-orint1([_, or(P,q), orint1(Row)], Verifiedlines) :- 
+orint1([_, or(P,Q), orint1(Row)], Verifiedlines) :- 
     member([Row, P, _], Verifiedlines). 
 
 %%orint2
@@ -63,12 +70,41 @@ negnegel([_, P, negnegel(Row)], Verifiedlines) :-
     member([Row, negneg(P), _], Verifiedlines). 
 
 %%contel
-contel([_, _, contel(Row)], VerifiedLines) :-
-    member([Row, cont, _], VerifiedLines). 
+contel([_, _, contel(Row)], Verifiedlines) :-
+    member([Row, cont, _], Verifiedlines). 
 
 %%copy
 copy([_, P, copy(Row)], Verifiedlines):- 
     member([Row, P, _], Verifiedlines). 
 
 %%findbox
-%findbox([])
+findbox(Prems, Goal, [[_, _, assumption]|T], Verifiedlines) :- 
+    valid_proof(Prems, Goal, T, [[_, _, assumption]|Verifiedlines]).
+
+%%orel
+orel([_, Ans, orel(X, Y, U, V, W)], Verifiedlines) :- %ha med Row och jämför? 
+    member(List1, Verifiedlines),
+    member(List2, Verifiedlines),
+    member([X, or(P,Q), _], Verifiedlines),
+    member([Y, P, assumption], List1),
+    member([U, Ans, _], List1),
+    member([V, Q, assumption], List2),
+    member([W, Ans, _], List2).
+
+%%impint
+impint([_, imp(P,Q), impint(R1,R2)], Verifiedlines):-
+    member(List, Verifiedlines), 
+    member([R1, P, assumption], List),
+    member([R2, Q, _], List).
+    
+%%negint
+negint([_, neg(P), negint(R1, R2)], Verifiedlines) :-
+    member(List, Verifiedlines),
+    member([R1, P, _], List),
+    member([R2, cont, _], List).
+
+%%PBC
+pbc([_, P, pbc(R1, R2)], Verifiedlines) :-
+    member(List, Verifiedlines),
+    member([R1, neg(P), _], List),
+    member([R2, cont, _], List).
