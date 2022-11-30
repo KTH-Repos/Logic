@@ -3,6 +3,7 @@ verify(InputFileName) :-
     see(InputFileName),
     read(Prems), read(Goal), read(Proof),
     seen,
+    checkGoal(Goal, Proof),
     valid_proof(Prems, Goal, Proof, []),!.
 
 
@@ -12,13 +13,11 @@ valid_proof(Prems, Goal, [H|T], Verifiedlines) :-
     check_row(Prems, Goal, H, Verifiedlines), 
     valid_proof(Prems, Goal, T, [H|Verifiedlines]).
 
-
-check_row(Prems, Goal, [H|[]], ValidProof) :-
-    check_row(Prems, Goal, H, ValidProof),
-    member(Goal, H).
+checkGoal(Goal, Proof):- 
+	last(Proof, LastRow),
+	nth1(2, LastRow, Goal).
 
 %%check premise
-%premise(Prems, [_, P, premise]) :- member(P, Prems). 
 check_row(Prems, _, [_, P, premise], VerifiedLines) :- member(P,Prems).
 
 %%andint
@@ -60,12 +59,12 @@ check_row(_,_,[_, or(P, neg(P)), lem], Verifiedlines).
     %member([_, _, _ ], Verifiedlines). 
 
 %%negnegint
-check_row(_,_,[_, negneg(P), negnegint(Row)], Verifiedlines) :-
+check_row(_,_,[_, neg(neg(P)), negnegint(Row)], Verifiedlines) :-
     member([Row, P, _], Verifiedlines). 
 
 %%negnegel
 check_row(_,_,[_, P, negnegel(Row)], Verifiedlines) :-
-    member([Row, negneg(P), _], Verifiedlines). 
+    member([Row, neg(neg(P)), _], Verifiedlines). 
 
 %%contel
 check_row(_,_,[_, _, contel(Row)], Verifiedlines) :-
