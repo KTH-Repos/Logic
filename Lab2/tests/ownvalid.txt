@@ -1,0 +1,26 @@
+[or(and(p, q), r)].
+
+or(p, or(q,r)).
+
+[
+    [1, or(and(p, q), r),    premise],
+    [
+      [2, and(p, q),         assumption],
+      [
+        [3, p,               assumption],
+        [4, or(p, or(q, r)), orint1(3)]
+      ],
+      [
+        [5, q,               assumption],
+        [6, or(q, r),        orint1(5)],
+        [7, or(p, or(q, r)),  orint2(6)]
+      ],
+      [8, or(p, or(q, r)),   orel(2,3,4,5,7)]
+    ],
+    [
+      [9, r,                 assumption],
+      [10, or(q, r),         orint2(9)],
+      [11, or(p, or(q, r)),  orint2(10)]
+    ],
+    [12, or(p, or(q, r)),    orel(1,2,8,9,11)]
+].
