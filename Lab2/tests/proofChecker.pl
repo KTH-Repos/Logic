@@ -106,3 +106,5 @@ check_row(_,_,[_, P, pbc(R1, R2)], Verifiedlines) :-
     member([R1, neg(P), assumption], List),
     member([R2, cont, _], List).
     
+
+%valid_proof([imp(p, q), p],q,Y,X).

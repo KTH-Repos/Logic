@@ -11,7 +11,8 @@ run_all_tests(ProgramToTest) :-
                   'valid10.txt', 'valid11.txt', 'valid12.txt',
                   'valid13.txt', 'valid14.txt', 'valid15.txt',
                   'valid16.txt', 'valid17.txt', 'valid18.txt',
-                  'valid19.txt', 'valid20.txt', 'valid21.txt']),
+                  'valid19.txt', 'valid20.txt', 'valid21.txt',
+                  'ownvalid.txt']),
     all_invalid_ok(['invalid01.txt', 'invalid02.txt', 'invalid03.txt',
                     'invalid04.txt', 'invalid05.txt', 'invalid06.txt',
                     'invalid07.txt', 'invalid08.txt', 'invalid09.txt',
@@ -21,7 +22,7 @@ run_all_tests(ProgramToTest) :-
                     'invalid19.txt', 'invalid20.txt', 'invalid21.txt',
                     'invalid22.txt', 'invalid23.txt', 'invalid24.txt',
                     'invalid25.txt', 'invalid26.txt', 'invalid27.txt',
-                    'invalid28.txt']),
+                    'invalid28.txt', 'owninvalid.txt']),
     halt.
 
 
