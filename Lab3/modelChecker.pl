@@ -16,53 +16,44 @@ check_some(T, L, [Q1|Tail], U, X) :-
 %Literals
 % X 
 check(_, L, S, [], X) :-
-    member([S, _], T),
     member([S, Labels], L), 
     member(X, Labels).
 
 % neg(X)
 check(_, L, S, [], neg(X)) :-
-    member([S, _], T),
     member([S, Labels], L),
     \+member(X, Labels).
 
 % and(F,G)
 check(T, L, S, [], and(F,G)) :-
-    member([S, _], T),
-    member([S, Labels], L),
-    member(F, Labels),
-    member(G, Labels). 
+    check(T, L, S, [], F),
+    check(T, L, S, [], G).
 
-% or(F,G)
+% or1(F,G)
 check(T, L, S, [], or(F,G)) :-
-    member([S, _], T),
-    member([S, Labels], L),
-    member(F, Labels);
-    member(G, Labels). 
+    check(T, L, S, [], F);
+    check(T, L, S, [], G).
 
 % AX
-check(T, L, S, U, ax(F)) :-
+check(T, L, S, [], ax(F)) :-
     member([S, Neighbors], T),
-    check_all(T, L, Neighbors, U, F). %[] ist för U?
+    check_all(T, L, Neighbors, [], F). 
 
 % EX
 check(T, L, S, [], ex(F)) :-
     member([S, Neighbors], T), 
-    check_some(T, L, Neighbors, U, F). %[] ist för U?
-
+    check_some(T, L, Neighbors, [], F). 
 
 % AG1
-check(_, _, S, U, ag(F)) :-
+check(_, _, S, U, ag(_)) :-
     member(S, U).
-
 
 % AG2
 check(T, L, S, U, ag(F)) :-
     \+member(S, U),
-    check(_, L, S, [], F),
+    check(T, L, S, [], F),
     member([S, Neighbors], T),
     check_all(T, L, Neighbors, [S|U], ag(F)).
-
 
 % EG1
 check(_, _, S, U, eg(_)):-
@@ -71,14 +62,14 @@ check(_, _, S, U, eg(_)):-
 % EG2
 check(T, L, S, U, eg(F)):-
     \+ member(S, U),
-    check(T, L, S, U, F),
+    check(T, L, S, [], F),
     member([S,Neighbors], T),
     check_some(T, L, Neighbors, [S|U], eg(F)).
 
 % EF1
 check(T, L, S, U, ef(F)) :-
     \+member(S, U),
-    check(_, L, S, [], F),
+    check(T, L, S, [], F).
 
 % EF2
 check(T, L, S, U, ef(F)) :-
@@ -96,5 +87,3 @@ check(T, L, S, U, af(F)) :-
     \+member(S, U),
     member([S,Neighbors], T),
     check_all(T, L, Neighbors, [S|U], af(F)). 
-
-
