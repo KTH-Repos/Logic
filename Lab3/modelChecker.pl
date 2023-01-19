@@ -4,14 +4,14 @@ verify(Input) :-
     see(Input), read(T), read(L), read(S), read(F), seen,
     check(T, L, S, [], F).
 
-check_all(_, _, [], _, _).
-check_all(T, L, [S|Tail], U, F) :-
+check_for_all(_, _, [], _, _).
+check_for_all(T, L, [S|Tail], U, F) :-
     check(T, L, S, U, F),
-    check_all(T, L, Tail, U, F). 
+    check_for_all(T, L, Tail, U, F). 
 
-check_some(T, L, [Q1|Tail], U, X) :-
-    check(T, L, Q1, U, X);
-    check_some(T, L, Tail, U, X).
+check_for_some(T, L, [S|Tail], U, X) :-
+    check(T, L, S, U, X);
+    check_for_some(T, L, Tail, U, X).
 
 %Literals
 % X 
@@ -37,12 +37,12 @@ check(T, L, S, [], or(F,G)) :-
 % AX
 check(T, L, S, [], ax(F)) :-
     member([S, Neighbors], T),
-    check_all(T, L, Neighbors, [], F). 
+    check_for_all(T, L, Neighbors, [], F). 
 
 % EX
 check(T, L, S, [], ex(F)) :-
     member([S, Neighbors], T), 
-    check_some(T, L, Neighbors, [], F). 
+    check_for_some(T, L, Neighbors, [], F). 
 
 % AG1
 check(_, _, S, U, ag(_)) :-
@@ -53,7 +53,7 @@ check(T, L, S, U, ag(F)) :-
     \+member(S, U),
     check(T, L, S, [], F),
     member([S, Neighbors], T),
-    check_all(T, L, Neighbors, [S|U], ag(F)).
+    check_for_all(T, L, Neighbors, [S|U], ag(F)).
 
 % EG1
 check(_, _, S, U, eg(_)):-
@@ -64,7 +64,7 @@ check(T, L, S, U, eg(F)):-
     \+ member(S, U),
     check(T, L, S, [], F),
     member([S,Neighbors], T),
-    check_some(T, L, Neighbors, [S|U], eg(F)).
+    check_for_some(T, L, Neighbors, [S|U], eg(F)).
 
 % EF1
 check(T, L, S, U, ef(F)) :-
@@ -75,7 +75,7 @@ check(T, L, S, U, ef(F)) :-
 check(T, L, S, U, ef(F)) :-
     \+member(S, U),
     member([S,Neighbors], T),
-    check_some(T, L, Neighbors, [S|U], ef(F)).
+    check_for_some(T, L, Neighbors, [S|U], ef(F)).
 
 % AF1
 check(T, L, S, U, af(F)) :-
@@ -86,4 +86,4 @@ check(T, L, S, U, af(F)) :-
 check(T, L, S, U, af(F)) :-
     \+member(S, U),
     member([S,Neighbors], T),
-    check_all(T, L, Neighbors, [S|U], af(F)). 
+    check_for_all(T, L, Neighbors, [S|U], af(F)). 
